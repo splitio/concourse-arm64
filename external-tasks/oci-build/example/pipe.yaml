@@ -18,7 +18,7 @@ jobs:
       platform: linux
       image_resource:
         type: registry-image
-        source: 
+        source:
           repository: rdclda/concourse-oci-build-task
           tag: latest
       inputs:
@@ -29,5 +29,5 @@ jobs:
         CONTEXT: concourse-arm64/external-tasks/oci-build/example
       run:
         path: build
-      caches: 
+      caches:
       - path: cache

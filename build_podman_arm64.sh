@@ -44,7 +44,7 @@ buildConcourseResourceDocker() {
     --tag $DOCKER_REGISTRY_BASE/concourse-${_type}-resource:${_version} \
     . \
     -f resource-types/Dockerfile-${_type}-resource
-  
+
   podman push $DOCKER_REGISTRY_BASE/concourse-${_type}-resource:${_version}
 
   podman create --name ${_type}-resource $DOCKER_REGISTRY_BASE/concourse-${_type}-resource:${_version}
@@ -52,7 +52,7 @@ buildConcourseResourceDocker() {
   podman export ${_type}-resource | gzip \
     > resource-types/${_type}/rootfs.tgz
   podman rm -v ${_type}-resource
-  generateResourceMetdata ${_type} ${_version} ${_privileged} 
+  generateResourceMetdata ${_type} ${_version} ${_privileged}
 }
 
 #

@@ -43,6 +43,7 @@ buildConcourseResourceDocker() {
     --build-arg ${_build_arg_type}_resource_version=${_version} \
     --platform linux/arm64 \
     --tag $DOCKER_REGISTRY_BASE/concourse-${_type}-resource:${_version} \
+    --output type=docker \
     -f resource-types/Dockerfile-${_type}-resource .
 
   if [ "$SHOULD_PUSH" = "true" ]; then
@@ -54,7 +55,7 @@ buildConcourseResourceDocker() {
   docker export ${_type}-resource | gzip \
     > resource-types/${_type}/rootfs.tgz
   docker rm -v ${_type}-resource
-  generateResourceMetdata ${_type} ${_version} ${_privileged} 
+  generateResourceMetdata ${_type} ${_version} ${_privileged}
 }
 
 #
