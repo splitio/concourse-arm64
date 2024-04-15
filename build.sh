@@ -57,13 +57,7 @@ buildConcourseResourceDocker() {
 #
 # Build resource types
 buildConcourseResourceDocker registry-image $REGISTRY_IMAGE_RESOURCE_VERSION false
-buildConcourseResourceDocker time $TIME_RESOURCE_VERSION false
-buildConcourseResourceDocker semver $SEMVER_RESOURCE_VERSION false
 buildConcourseResourceDocker git $GIT_RESOURCE_VERSION false
-buildConcourseResourceDocker mock $MOCK_RESOURCE_VERSION false
-buildConcourseResourceDocker s3 $S3_RESOURCE_VERSION false
-buildConcourseResourceDocker github-release $GITHUB_RELEASE_RESOURCE_VERSION false
-buildConcourseResourceDocker slack-alert $SLACK_ALERT_RESOURCE_VERSION false
 
 #
 # Concourse image build

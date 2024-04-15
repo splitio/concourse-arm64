@@ -1,7 +1,6 @@
 # Global build images
 ARG golang_concourse_builder_image
 
-#
 # Build the UI artefacts
 FROM ubuntu:20.04 AS yarn-builder
 
@@ -9,7 +8,6 @@ RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata
 RUN apt-get update && apt-get install -y git curl libatomic1 xz-utils jq chromium-bsu chromium-browser
 
-#
 # NodeJS installation
 ARG node_version
 RUN curl -sL https://nodejs.org/dist/v${node_version}/node-v${node_version}-linux-arm64.tar.xz -o node-${node_version}-linux-arm64.tar.xz && \
@@ -21,12 +19,10 @@ ENV PATH="/usr/local/lib/nodejs/node-v${node_version}-linux-arm64/bin:${PATH}"
 
 RUN npm install --global yarn
 
-#
 # Install elm (pre-compiled for arm64) since there is no public version available
 ARG elm_version
 ADD dist/elm-v${elm_version}-arm64.tar.gz /usr/local/bin
 
-#
 # Build concourse web
 ARG concourse_version
 RUN git clone --branch v${concourse_version} https://github.com/concourse/concourse /yarn/concourse
@@ -39,8 +35,6 @@ RUN cat package.json | jq 'del(.devDependencies ["elm","elm-analyse","elm-format
 RUN yarn
 RUN yarn build
 
-
-#
 # Build the go artefacts
 FROM ${golang_concourse_builder_image} AS go-builder
 
@@ -69,8 +63,6 @@ RUN apk add bash
 ENV CGO_ENABLED=0
 RUN ./build_linux.sh
 
-
-#
 # Generate the final image
 FROM ubuntu:bionic AS ubuntu
 
@@ -83,7 +75,6 @@ COPY --from=go-builder /go/concourse/concourse /usr/local/concourse/bin/
 COPY --from=go-builder /go/guardian/gdn /usr/local/concourse/bin/
 COPY --from=go-builder /go/guardian/cmd/init/init /usr/local/concourse/bin/
 COPY --from=go-builder /go/plugins/bin/* /usr/local/concourse/bin/
-
 
 # Add resource-types
 COPY resource-types /usr/local/concourse/resource-types
