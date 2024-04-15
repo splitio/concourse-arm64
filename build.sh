@@ -76,7 +76,7 @@ docker buildx build \
   --tag $DOCKER_REGISTRY_BASE/concourse:$CONCOURSE_VERSION .
 
 if [ "$SHOULD_PUSH" = "true" ]; then
-  docker push $DOCKER_REGISTRY_BASE/concourse:$CONCOURSE_VERSION
+  docker push $DOCKER_REGISTRY_BASE/concourse
 fi
 
 #
@@ -92,7 +92,6 @@ for task in dcind:1.0.0 oci-build:0.9.0; do
     --tag $DOCKER_REGISTRY_BASE/concourse-${_t}-task:${_v}) .
 
   if [ "$SHOULD_PUSH" = "true" ]; then
-    docker push $DOCKER_REGISTRY_BASE/concourse-${_t}-task:latest
-    docker push $DOCKER_REGISTRY_BASE/concourse-${_t}-task:${_v}
+    docker push $DOCKER_REGISTRY_BASE/concourse-${_t}-task
   fi
 done
