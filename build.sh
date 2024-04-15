@@ -73,7 +73,7 @@ docker buildx build \
   --build-arg node_version=$NODE_VERSION \
   --build-arg golang_concourse_builder_image=$GOLANG_CONCOURSE_BUILDER_IMAGE \
   --platform linux/arm64 \
-  --tag $DOCKER_REGISTRY_BASE/concourse:$CONCOURSE_VERSION
+  --tag $DOCKER_REGISTRY_BASE/concourse:$CONCOURSE_VERSION .
 
 if [ "$SHOULD_PUSH" = "true" ]; then
   docker push $DOCKER_REGISTRY_BASE/concourse:$CONCOURSE_VERSION
@@ -85,11 +85,11 @@ for task in dcind:1.0.0 oci-build:0.9.0; do
   _t=$(echo $task | awk -F: '{print $1}')
   _v=$(echo $task | awk -F: '{print $2}')
   _b=$(echo $_t | sed 's/-/_/g')
-  docker buildx build \
+  (cd ./external-tasks/$_t && docker buildx build \
     --platform linux/arm64 \
     --build-arg ${_b}_task_version=${_v} \
     --tag $DOCKER_REGISTRY_BASE/concourse-${_t}-task:latest \
-    --tag $DOCKER_REGISTRY_BASE/concourse-${_t}-task:${_v} ./external-tasks/$_t
+    --tag $DOCKER_REGISTRY_BASE/concourse-${_t}-task:${_v}) .
 
   if [ "$SHOULD_PUSH" = "true" ]; then
     docker push $DOCKER_REGISTRY_BASE/concourse-${_t}-task:latest
