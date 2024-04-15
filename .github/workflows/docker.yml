@@ -30,7 +30,7 @@ jobs:
 
       - name: Get latest version
         id: get-latest-version
-        run: echo "::set-output name=version::$(ls -t build-specs | head -n1 | grep -o -E '[0-9]+\.[0-9]+\.[0-9]+')"
+        run: echo "VERSION=$(ls -t build-specs | head -n1 | grep -o -E '[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
 
       - name: Login to Artifactory
         if: ${{ github.event_name == 'push' }}
@@ -41,7 +41,7 @@ jobs:
           password: ${{ secrets.ARTIFACTORY_DOCKER_PASS }}
 
       - name: Run build.sh script
-        run: bash build.sh ${{ steps.get-latest-version.outputs.version }}
+        run: bash build.sh $VERSION
         env:
           SHOULD_PUSH: ${{ github.event_name == 'push' }}
 
