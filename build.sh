@@ -85,11 +85,11 @@ for task in dcind:1.0.0 oci-build:0.9.0; do
   _t=$(echo $task | awk -F: '{print $1}')
   _v=$(echo $task | awk -F: '{print $2}')
   _b=$(echo $_t | sed 's/-/_/g')
-  (cd ./external-tasks/$_t && docker buildx build \
+  docker buildx build \
     --platform linux/arm64 \
     --build-arg ${_b}_task_version=${_v} \
     --tag $DOCKER_REGISTRY_BASE/concourse-${_t}-task:latest \
-    --tag $DOCKER_REGISTRY_BASE/concourse-${_t}-task:${_v} .)
+    --tag $DOCKER_REGISTRY_BASE/concourse-${_t}-task:${_v} ./external-tasks/$_t
 
   if [ "$SHOULD_PUSH" = "true" ]; then
     docker push $DOCKER_REGISTRY_BASE/concourse-${_t}-task:latest
