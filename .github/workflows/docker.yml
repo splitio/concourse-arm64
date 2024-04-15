@@ -30,10 +30,7 @@ jobs:
 
       - name: Get latest version
         id: get-latest-version
-        run: echo "::set-output name=version::$(ls -t build-specs | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | head -n1)"
-
-      - name: Run build.sh script
-        run: bash build.sh ${{ steps.get-latest-version.outputs.version }}
+        run: echo "::set-output name=version::$(ls -t build-specs | head -n1 | grep -o -E '[0-9]+\.[0-9]+\.[0-9]+')"
 
       - name: Login to Artifactory
         if: ${{ github.event_name == 'push' }}
@@ -43,13 +40,8 @@ jobs:
           username: ${{ secrets.ARTIFACTORY_DOCKER_USER }}
           password: ${{ secrets.ARTIFACTORY_DOCKER_PASS }}
 
-      - name: Docker build
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          platforms: linux/amd64,linux/arm64
-          push: ${{ github.event_name == 'push' }}
-          tags: splitio-docker.jfrog.io/${{ github.event.repository.name }}:${{ github.sha }},splitio-docker.jfrog.io/${{ github.event.repository.name }}:latest
+      - name: Run build.sh script
+        run: bash build.sh ${{ steps.get-latest-version.outputs.version }}
 
       - name: Save job result
         if: ${{ github.event_name == 'push' }}
