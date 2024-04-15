@@ -43,8 +43,11 @@ buildConcourseResourceDocker() {
     --build-arg ${_build_arg_type}_resource_version=${_version} \
     --platform linux/arm64 \
     --tag $DOCKER_REGISTRY_BASE/concourse-${_type}-resource:${_version} \
-    --push . \
     -f resource-types/Dockerfile-${_type}-resource
+
+  if [ "$SHOULD_PUSH" = "true" ]; then
+    docker push $DOCKER_REGISTRY_BASE/concourse-${_type}-resource:${_version}
+  fi
 
   docker create --name ${_type}-resource $DOCKER_REGISTRY_BASE/concourse-${_type}-resource:${_version}
   mkdir -p resource-types/${_type}
@@ -70,8 +73,11 @@ docker buildx build \
   --build-arg node_version=$NODE_VERSION \
   --build-arg golang_concourse_builder_image=$GOLANG_CONCOURSE_BUILDER_IMAGE \
   --platform linux/arm64 \
-  --tag $DOCKER_REGISTRY_BASE/concourse:$CONCOURSE_VERSION \
-  --push .
+  --tag $DOCKER_REGISTRY_BASE/concourse:$CONCOURSE_VERSION
+
+if [ "$SHOULD_PUSH" = "true" ]; then
+  docker push $DOCKER_REGISTRY_BASE/concourse:$CONCOURSE_VERSION
+fi
 
 #
 # Build external tasks
@@ -83,6 +89,10 @@ for task in dcind:1.0.0 oci-build:0.9.0; do
     --platform linux/arm64 \
     --build-arg ${_b}_task_version=${_v} \
     --tag $DOCKER_REGISTRY_BASE/concourse-${_t}-task:latest \
-    --tag $DOCKER_REGISTRY_BASE/concourse-${_t}-task:${_v} \
-    --push .)
+    --tag $DOCKER_REGISTRY_BASE/concourse-${_t}-task:${_v})
+
+  if [ "$SHOULD_PUSH" = "true" ]; then
+    docker push $DOCKER_REGISTRY_BASE/concourse-${_t}-task:latest
+    docker push $DOCKER_REGISTRY_BASE/concourse-${_t}-task:${_v}
+  fi
 done
