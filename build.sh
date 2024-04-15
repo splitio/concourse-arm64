@@ -46,7 +46,7 @@ buildConcourseResourceDocker() {
     -f resource-types/Dockerfile-${_type}-resource .
 
   if [ "$SHOULD_PUSH" = "true" ]; then
-    docker push $DOCKER_REGISTRY_BASE/concourse-${_type}-resource:${_version}
+    docker push $DOCKER_REGISTRY_BASE/concourse-${_type}-resource}
   fi
 
   docker create --name ${_type}-resource $DOCKER_REGISTRY_BASE/concourse-${_type}-resource:${_version}
@@ -88,7 +88,7 @@ for task in dcind:1.0.0 oci-build:0.9.0; do
   (cd ./external-tasks/$_t && docker buildx build \
     --platform linux/arm64 \
     --build-arg ${_b}_task_version=${_v} \
-    --tag $DOCKER_REGISTRY_BASE/concourse-${_t}-task:${_v}) .
+    --tag $DOCKER_REGISTRY_BASE/concourse-${_t}-task:${_v} .)
 
   if [ "$SHOULD_PUSH" = "true" ]; then
     docker push $DOCKER_REGISTRY_BASE/concourse-${_t}-task
