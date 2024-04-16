@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# set -x
+# Exit on error
 set -e
 
 if [ -f ./build-specs/concourse-$1.cfg ]; then
@@ -18,7 +18,7 @@ source .env
 
 generateResourceMetdata() {
 _type=$1
-_version=${2:1}
+_version=$2
 _privileged=$3
 
 mkdir -p resource-types/$_type
@@ -43,29 +43,20 @@ buildConcourseResourceDocker() {
     --build-arg ${_build_arg_type}_resource_version=${_version} \
     --platform linux/arm64 \
     --tag $DOCKER_REGISTRY_BASE/concourse-${_type}-resource:${_version} \
-    --push . \
-    -f resource-types/Dockerfile-${_type}-resource
+    --file resource-types/Dockerfile-${_type}-resource \
+    --output type=docker .
 
   docker create --name ${_type}-resource $DOCKER_REGISTRY_BASE/concourse-${_type}-resource:${_version}
   mkdir -p resource-types/${_type}
-  docker export ${_type}-resource | gzip \
-    > resource-types/${_type}/rootfs.tgz
+  docker export ${_type}-resource | gzip > resource-types/${_type}/rootfs.tgz
   docker rm -v ${_type}-resource
-  generateResourceMetdata ${_type} ${_version} ${_privileged} 
+  generateResourceMetdata ${_type} ${_version} ${_privileged}
 }
 
-#
 # Build resource types
 buildConcourseResourceDocker registry-image $REGISTRY_IMAGE_RESOURCE_VERSION false
-buildConcourseResourceDocker time $TIME_RESOURCE_VERSION false
-buildConcourseResourceDocker semver $SEMVER_RESOURCE_VERSION false
 buildConcourseResourceDocker git $GIT_RESOURCE_VERSION false
-buildConcourseResourceDocker mock $MOCK_RESOURCE_VERSION false
-buildConcourseResourceDocker s3 $S3_RESOURCE_VERSION false
-buildConcourseResourceDocker github-release $GITHUB_RELEASE_RESOURCE_VERSION false
-buildConcourseResourceDocker slack-alert $SLACK_ALERT_RESOURCE_VERSION false
 
-#
 # Concourse image build
 docker buildx build \
   --build-arg concourse_version=$CONCOURSE_VERSION \
@@ -77,18 +68,8 @@ docker buildx build \
   --build-arg golang_concourse_builder_image=$GOLANG_CONCOURSE_BUILDER_IMAGE \
   --platform linux/arm64 \
   --tag $DOCKER_REGISTRY_BASE/concourse:$CONCOURSE_VERSION \
-  --push .
+  --output type=docker .
 
-#
-# Build external tasks
-for task in dcind:1.0.0 oci-build:0.9.0; do
-  _t=$(echo $task | awk -F: '{print $1}')
-  _v=$(echo $task | awk -F: '{print $2}')
-  _b=$(echo $_t | sed 's/-/_/g')
-  (cd ./external-tasks/$_t && docker buildx build \
-    --platform linux/arm64 \
-    --build-arg ${_b}_task_version=${_v} \
-    --tag $DOCKER_REGISTRY_BASE/concourse-${_t}-task:latest \
-    --tag $DOCKER_REGISTRY_BASE/concourse-${_t}-task:${_v} \
-    --push .)
-done
+if [ "$SHOULD_PUSH" = "true" ]; then
+  docker push $DOCKER_REGISTRY_BASE/concourse
+fi
