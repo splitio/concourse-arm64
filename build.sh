@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# set -x
+# Exit on error
 set -e
 
 if [ -f ./build-specs/concourse-$1.cfg ]; then
@@ -46,24 +46,17 @@ buildConcourseResourceDocker() {
     --output type=docker \
     -f resource-types/Dockerfile-${_type}-resource .
 
-  if [ "$SHOULD_PUSH" = "true" ]; then
-    docker push $DOCKER_REGISTRY_BASE/concourse-${_type}-resource}
-  fi
-
   docker create --name ${_type}-resource $DOCKER_REGISTRY_BASE/concourse-${_type}-resource:${_version}
   mkdir -p resource-types/${_type}
-  docker export ${_type}-resource | gzip \
-    > resource-types/${_type}/rootfs.tgz
+  docker export ${_type}-resource | gzip > resource-types/${_type}/rootfs.tgz
   docker rm -v ${_type}-resource
   generateResourceMetdata ${_type} ${_version} ${_privileged}
 }
 
-#
 # Build resource types
 buildConcourseResourceDocker registry-image $REGISTRY_IMAGE_RESOURCE_VERSION false
 buildConcourseResourceDocker git $GIT_RESOURCE_VERSION false
 
-#
 # Concourse image build
 docker buildx build \
   --build-arg concourse_version=$CONCOURSE_VERSION \
@@ -79,19 +72,3 @@ docker buildx build \
 if [ "$SHOULD_PUSH" = "true" ]; then
   docker push $DOCKER_REGISTRY_BASE/concourse
 fi
-
-#
-# Build external tasks
-for task in dcind:1.0.0 oci-build:0.9.0; do
-  _t=$(echo $task | awk -F: '{print $1}')
-  _v=$(echo $task | awk -F: '{print $2}')
-  _b=$(echo $_t | sed 's/-/_/g')
-  (cd ./external-tasks/$_t && docker buildx build \
-    --platform linux/arm64 \
-    --build-arg ${_b}_task_version=${_v} \
-    --tag $DOCKER_REGISTRY_BASE/concourse-${_t}-task:${_v} .)
-
-  if [ "$SHOULD_PUSH" = "true" ]; then
-    docker push $DOCKER_REGISTRY_BASE/concourse-${_t}-task
-  fi
-done
