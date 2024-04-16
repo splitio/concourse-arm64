@@ -71,5 +71,5 @@ docker buildx build \
   --output type=docker .
 
 if [ "$SHOULD_PUSH" = "true" ]; then
-  docker push $DOCKER_REGISTRY_BASE/concourse
+  docker push $DOCKER_REGISTRY_BASE/concourse:$CONCOURSE_VERSION
 fi
