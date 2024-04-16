@@ -32,7 +32,7 @@ RUN sed -i 's/\"ryannhg\/date\-format\"\:\ \"2\.3\.0\"/\"ryan\-haskell\/date\-fo
 # Patch the package json since we have elm pre-installed
 RUN cat package.json | jq 'del(.devDependencies ["elm","elm-analyse","elm-format","elm-test"])' > package.json.tmp && \
       mv package.json.tmp package.json
-RUN yarn
+RUN yarn --network-timeout 600000
 RUN yarn build
 
 # Build the go artefacts
