@@ -19,7 +19,7 @@ jobs:
       platform: linux
       image_resource:
         type: registry-image
-        source: 
+        source:
           repository: arm64v8/busybox
       run:
         path: ls

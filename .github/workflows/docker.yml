@@ -44,7 +44,3 @@ jobs:
         run: bash build.sh $VERSION
         env:
           SHOULD_PUSH: ${{ github.event_name == 'push' }}
-
-      - name: Save job result
-        if: ${{ github.event_name == 'push' }}
-        run: echo "Container tag $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"

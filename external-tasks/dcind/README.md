@@ -14,7 +14,7 @@ You should avoid having Docker fetch any images from inside your task step where
 
 For the container image that contains your application you should have that built in a previous step or job. You can build and publish an image using the oci-build task.
 
-To ensure Docker doesn't try to fetch the images itself you can use docker load and docker tag to load your externalized images into Docker. 
+To ensure Docker doesn't try to fetch the images itself you can use docker load and docker tag to load your externalized images into Docker.
 
 ### Usage
 
@@ -53,17 +53,17 @@ Note that `docker-lib.sh` has `bash` dependencies, so it is important to use `ba
               - |
                 source /docker-lib.sh
                 start_docker
-                
+
                 # Strictly speaking, preloading of Docker images is not required.
                 # However, you might want to do this for a couple of reasons:
                 # - If the image comes from a private repository, it is much easier to let Concourse pull it,
                 #   and then pass it through to the task.
                 # - When the image is passed to the task, Concourse can often get the image from its cache.
                 docker load -i redis/image.tar
-                
+
                 # This is just to visually check in the log that images have been loaded successfully.
                 docker images
-                
+
                 # Run the container with tests and its dependencies.
                 docker-compose -f code/external-tasks/dcind/example/integration.yaml run tests
 ~~~

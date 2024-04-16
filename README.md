@@ -37,7 +37,7 @@ The following tasks have been ported to the `arm64` platform:
 
 | Task | Image | Version | Description |
 |--- |--- |--- |---|
-| [dcind](https://github.com/robinhuiser/concourse-arm64/tree/main/external-tasks/dcind) | [rdclda/concourse-dcind-task](https://hub.docker.com/repository/docker/rdclda/concourse-dcind-task) | 1.0.0 | A task for running Docker Compose in Docker | 
+| [dcind](https://github.com/robinhuiser/concourse-arm64/tree/main/external-tasks/dcind) | [rdclda/concourse-dcind-task](https://hub.docker.com/repository/docker/rdclda/concourse-dcind-task) | 1.0.0 | A task for running Docker Compose in Docker |
 | [oci-build](https://github.com/concourse/oci-build-task) | [rdclda/concourse-oci-build-task](https://hub.docker.com/repository/docker/rdclda/concourse-oci-build-task) | 0.9.0 | A task for building OCI images |
 
 ## Deploy
@@ -53,14 +53,14 @@ $ export FLY_TARGET=my-m2
 $ fly --target=$FLY_TARGET login \
     --concourse-url=http://concourse.localtest.me:8080 \
     --username=test \
-    --password=test                                                      
+    --password=test
 ~~~
 
 You can now access the Concourse web console using [http://concourse.localtest.me:8080/](http://concourse.localtest.me:8080/).
 
 ## Tests
 
-These tests are provided to verify the correct working of the bundled resource types. 
+These tests are provided to verify the correct working of the bundled resource types.
 
 Prepare some surrounding service requirements first:
 
