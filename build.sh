@@ -43,8 +43,8 @@ buildConcourseResourceDocker() {
     --build-arg ${_build_arg_type}_resource_version=${_version} \
     --platform linux/arm64 \
     --tag $DOCKER_REGISTRY_BASE/concourse-${_type}-resource:${_version} \
-    --output type=docker \
-    -f resource-types/Dockerfile-${_type}-resource .
+    --file resource-types/Dockerfile-${_type}-resource \
+    --output type=docker .
 
   docker create --name ${_type}-resource $DOCKER_REGISTRY_BASE/concourse-${_type}-resource:${_version}
   mkdir -p resource-types/${_type}
@@ -67,7 +67,8 @@ docker buildx build \
   --build-arg node_version=$NODE_VERSION \
   --build-arg golang_concourse_builder_image=$GOLANG_CONCOURSE_BUILDER_IMAGE \
   --platform linux/arm64 \
-  --tag $DOCKER_REGISTRY_BASE/concourse:$CONCOURSE_VERSION .
+  --tag $DOCKER_REGISTRY_BASE/concourse:$CONCOURSE_VERSION \
+  --output type=docker .
 
 if [ "$SHOULD_PUSH" = "true" ]; then
   docker push $DOCKER_REGISTRY_BASE/concourse
