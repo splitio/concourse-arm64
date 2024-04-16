@@ -2,11 +2,11 @@
 ARG golang_concourse_builder_image
 
 # Build the UI artefacts
-FROM ubuntu:20.04 AS yarn-builder
+FROM ubuntu:22.04 AS yarn-builder
 
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata
-RUN apt-get update && apt-get install -y git curl libatomic1 xz-utils jq chromium-bsu chromium-browser
+RUN apt-get update && apt-get install -y git curl libatomic1 xz-utils jq chromium-bsu chromium-browser libffi7
 
 # NodeJS installation
 ARG node_version
@@ -64,7 +64,7 @@ ENV CGO_ENABLED=0
 RUN ./build_linux.sh
 
 # Generate the final image
-FROM ubuntu:bionic AS ubuntu
+FROM ubuntu:22.04 AS ubuntu
 
 ARG concourse_version
 ARG concourse_docker_entrypoint_commit_id
@@ -88,7 +88,7 @@ ENV CONCOURSE_WEB_PUBLIC_DIR          /public
 VOLUME /worker-state
 
 RUN apt-get update && apt-get install -y \
-    btrfs-tools \
+    btrfs-progs \
     ca-certificates \
     containerd \
     iptables \

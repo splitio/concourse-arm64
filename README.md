@@ -6,39 +6,13 @@ This repository helps you build both the web and worker `arm64` components for C
 
 ## Bundled resources
 
-| Concourse | [git](https://github.com/concourse/git-resource) | [github-release](https://github.com/concourse/github-release-resource) | [registry-image](https://github.com/concourse/registry-image-resource) | [semver](https://github.com/concourse/semver-resource) | [time](https://github.com/concourse/time-resource) | [mock](https://github.com/concourse/mock-resource) | [s3](https://github.com/concourse/s3-resource) | [slack-alert](https://github.com/arbourd/concourse-slack-alert-resource) |
-|--- |--- |--- |--- |--- |--- |--- |--- |--- |
-| v7.1.0 | v1.12.0 | v1.5.2 | v1.2.0 | v1.3.0 | v1.5.0 | v0.11.1 | v1.1.1 | v0.15.0 |
-| v7.2.0 | v1.12.1 | v1.5.2 | v1.2.1 | v1.3.0 | v1.6.0 | v0.11.1 | v1.1.1 | v0.15.0 |
-| v7.3.2 | v1.14.0 | v1.6.1 | v1.3.0 | v1.3.1 | v1.6.0 | v0.11.2 | v1.1.1 | v0.15.0 |
-| v7.4.0 | v1.14.0 | v1.6.2 | v1.4.0 | v1.3.4 | v1.6.1 | v0.12.2 | v1.1.2 | v0.15.0 |
-| v7.4.1 | v1.14.0 | v1.6.4 | v1.4.0 | v1.3.4 | v1.6.1 | v0.12.2 | v1.1.2 | v0.15.0 |
-| v7.4.2 | v1.14.0 | v1.6.4 | v1.4.0 | v1.3.4 | v1.6.1 | v0.12.2 | v1.1.2 | v0.15.0 |
-| v7.4.3 | v1.14.0 | v1.6.4 | v1.4.0 | v1.3.4 | v1.6.1 | v0.12.2 | v1.1.2 | v0.15.0 |
-| v7.4.4 | v1.14.0 | v1.6.4 | v1.4.0 | v1.3.4 | v1.6.1 | v0.12.2 | v1.1.2 | v0.15.0 |
-| v7.5.0 | v1.14.4 | v1.6.4 | v1.4.1 | v1.3.4 | v1.6.2 | v0.12.3 | v1.1.3 | v0.15.0 |
-| v7.6.0 | v1.14.5 | v1.6.4 | v1.4.1 | v1.3.4 | v1.6.2 | v0.12.3 | v1.1.3 | v0.15.0 |
-| v7.7.0 | v1.14.5 | v1.6.4 | v1.5.0 | v1.3.4 | v1.6.3 | v0.12.3 | v1.2.0 | v0.15.0 |
-| v7.7.1 | v1.14.5 | v1.6.4 | v1.5.0 | v1.3.4 | v1.6.3 | v0.12.3 | v1.2.0 | v0.15.0 |
-| v7.8.0 | v1.14.5 | v1.7.1 | v1.5.1 | v1.4.0 | v1.6.3 | v0.12.4 | v1.2.1 | v0.15.0 |
-| v7.8.1 | v1.14.5 | v1.7.2 | v1.5.1 | v1.4.0 | v1.6.3 | v0.12.4 | v1.2.1 | v0.15.0 |
-| v7.8.2 | v1.14.5 | v1.7.2 | v1.5.1 | v1.4.0 | v1.6.3 | v0.12.4 | v1.2.1 | v0.15.0 |
-| v7.8.3 | v1.14.5 | v1.7.2 | v1.5.1 | v1.4.0 | v1.6.3 | v0.12.4 | v1.2.1 | v0.15.0 |
-| v7.9.0 | v1.14.6 | v1.8.0 | v1.7.0 | v1.5.0 | v1.6.3 | v0.12.4 | v1.2.1 | v0.15.0 |
-| v7.9.1 | v1.14.7 | v1.8.0 | v1.7.1 | v1.5.1 | v1.6.3 | v0.12.4 | v1.2.1 | v0.15.0 |
+| Concourse | [git](https://github.com/concourse/git-resource) | [registry-image](https://github.com/concourse/registry-image-resource) |
+|--- |--- |--- |
+| v7.11.2 | v1.15.0 | v1.9.0 |
 
 ## Bundled CLIs
 
 Each Docker image includes the CLIs for Linux/Mac/Windows for the Intel platform - they can be downloaded from the Concourse web console.
-
-## Available Concourse tasks
-
-The following tasks have been ported to the `arm64` platform:
-
-| Task | Image | Version | Description |
-|--- |--- |--- |---|
-| [dcind](https://github.com/robinhuiser/concourse-arm64/tree/main/external-tasks/dcind) | [rdclda/concourse-dcind-task](https://hub.docker.com/repository/docker/rdclda/concourse-dcind-task) | 1.0.0 | A task for running Docker Compose in Docker |
-| [oci-build](https://github.com/concourse/oci-build-task) | [rdclda/concourse-oci-build-task](https://hub.docker.com/repository/docker/rdclda/concourse-oci-build-task) | 0.9.0 | A task for building OCI images |
 
 ## Deploy
 
@@ -57,49 +31,6 @@ $ fly --target=$FLY_TARGET login \
 ~~~
 
 You can now access the Concourse web console using [http://concourse.localtest.me:8080/](http://concourse.localtest.me:8080/).
-
-## Tests
-
-These tests are provided to verify the correct working of the bundled resource types.
-
-Prepare some surrounding service requirements first:
-
-~~~bash
-# create a public s3 bucket
-$ export S3_BUCKET_NAME=rdclda-concourse-s3-test
-$ aws s3api create-bucket --acl public-read \
-   --bucket $S3_BUCKET_NAME --region us-east-1
-
-# push test file to s3 bucket
-$ echo "Looks like the s3 resource is working." | \
-   aws s3 cp - s3://$S3_BUCKET_NAME/testfile.txt \
-   --acl public-read
-
-# define your Slack webhook URL
-$ export SLACK_WEBHOOK_URL=https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX
-~~~
-
-Now, we can deploy and run the tests:
-
-~~~bash
-# deploy & kick off the bundled resource tests
-$ for resource in registry-image time git s3 mock slack-alert; do
-    fly -t $FLY_TARGET set-pipeline -n -p test-${resource}-resource -c tests/$resource-resource.yaml \
-      --var s3-bucket-name=$S3_BUCKET_NAME \
-      --var slack-webhook-url=$SLACK_WEBHOOK_URL
-    fly -t $FLY_TARGET unpause-pipeline -p test-${resource}-resource
-    fly -t $FLY_TARGET trigger-job --job test-${resource}-resource/test-job
-done
-
-# deploy & kick off the external task test
-$ for task in dcind oci-build; do
-    fly -t $FLY_TARGET set-pipeline -n -p test-${task}-task -c external-tasks/${task}/example/pipe.yaml
-    fly -t $FLY_TARGET unpause-pipeline -p test-${task}-task
-    fly -t $FLY_TARGET trigger-job --job test-${task}-task/test-job
-done
-~~~
-
-Use the web console to verify the status of the tests.
 
 ## BIY
 
