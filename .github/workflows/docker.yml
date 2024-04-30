@@ -32,15 +32,47 @@ jobs:
         id: get-latest-version
         run: echo "VERSION=$(ls -t build-specs | head -n1 | grep -o -E '[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
 
-      - name: Login to Artifactory
-        if: ${{ github.event_name == 'push' }}
-        uses: docker/login-action@v3
+      - name: Checkout concourse
+        uses: actions/checkout@v4
         with:
-          registry: splitio-docker.jfrog.io
-          username: ${{ secrets.ARTIFACTORY_DOCKER_USER }}
-          password: ${{ secrets.ARTIFACTORY_DOCKER_PASS }}
+          repository: concourse/concourse
+          path: concourse
+          ref: $VERSION
+          submodules: true
 
-      - name: Run build.sh script
-        run: bash build.sh $VERSION
+      - name: Setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21.6'
+
+      - name: Set Fly version
+        working-directory: concourse
+        run: sed -i "s/0.0.0-dev/$VERSION/g" versions.go
+
+      - name: Build Fly
+        working-directory: concourse/fly
+        run: go build
         env:
-          SHOULD_PUSH: ${{ github.event_name == 'push' }}
+          GOOS: linux
+          GOARCH: arm64
+
+      - name: Move binary to context
+        run: mv ${{ github.workspace }}/concourse/fly/fly ${{ github.workspace }}/fly
+
+      - name: Test
+        run: |
+          file fly
+          ./fly --version
+
+      # - name: Login to Artifactory
+      #   if: ${{ github.event_name == 'push' }}
+      #   uses: docker/login-action@v3
+      #   with:
+      #     registry: splitio-docker.jfrog.io
+      #     username: ${{ secrets.ARTIFACTORY_DOCKER_USER }}
+      #     password: ${{ secrets.ARTIFACTORY_DOCKER_PASS }}
+      #
+      # - name: Run build.sh script
+      #   run: bash build.sh $VERSION
+      #   env:
+      #     SHOULD_PUSH: ${{ github.event_name == 'push' }}
