@@ -37,7 +37,7 @@ jobs:
         with:
           repository: concourse/concourse
           path: concourse
-          ref: $VERSION
+          ref: "v${{ env.VERSION }}"
           submodules: true
 
       - name: Setup go
