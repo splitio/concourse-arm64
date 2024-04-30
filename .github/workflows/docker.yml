@@ -51,13 +51,10 @@ jobs:
 
       - name: Build Fly
         working-directory: concourse/fly
-        run: go build
+        run: go build -o ${{ github.workspace }}/fly
         env:
           GOOS: linux
           GOARCH: arm64
-
-      - name: Move binary to context
-        run: mv ${{ github.workspace }}/concourse/fly/fly ${{ github.workspace }}/fly
 
       - name: Test
         run: |
