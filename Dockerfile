@@ -101,10 +101,10 @@ RUN apt-get update && apt-get install -y \
 RUN mkdir -p /usr/local/concourse/fly-assets && \
       curl -sL https://github.com/concourse/concourse/releases/download/v${concourse_version}/fly-${concourse_version}-darwin-amd64.tgz \
          -o /usr/local/concourse/fly-assets/fly-darwin-amd64.tgz && \
-      curl -sL https://github.com/concourse/concourse/releases/download/v${concourse_version}/fly-${concourse_version}-linux-amd64.tgz \
-         -o /usr/local/concourse/fly-assets/fly-linux-amd64.tgz && \
       curl -sL https://github.com/concourse/concourse/releases/download/v${concourse_version}/fly-${concourse_version}-windows-amd64.zip \
          -o /usr/local/concourse/fly-assets/fly-windows-amd64.zip
+
+COPY fly-linux-amd64.tgz /usr/local/concourse/fly-assets/fly-linux-amd64.tgz
 
 STOPSIGNAL SIGUSR2
 

@@ -20,6 +20,36 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Get latest version
+        run: echo "VERSION=$(ls -t build-specs | head -n1 | grep -o -E '[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
+
+      - name: Checkout concourse
+        uses: actions/checkout@v4
+        with:
+          repository: concourse/concourse
+          path: concourse
+          ref: "v${{ env.VERSION }}"
+          submodules: true
+
+      - name: Setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21.6'
+
+      - name: Set Fly version
+        working-directory: concourse
+        run: sed -i "s/0.0.0-dev/$VERSION/g" versions.go
+
+      - name: Build Fly
+        working-directory: concourse/fly
+        run: go build -o ${{ github.workspace }}/fly
+        env:
+          GOOS: linux
+          GOARCH: arm64
+
+      - name: Compress Fly
+        run: tar -czf fly-linux-amd64.tgz fly
+
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
         with:
@@ -27,10 +57,6 @@ jobs:
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-      - name: Get latest version
-        id: get-latest-version
-        run: echo "VERSION=$(ls -t build-specs | head -n1 | grep -o -E '[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
 
       - name: Login to Artifactory
         if: ${{ github.event_name == 'push' }}
