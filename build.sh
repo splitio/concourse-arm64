@@ -67,9 +67,9 @@ docker buildx build \
   --build-arg node_version=$NODE_VERSION \
   --build-arg golang_concourse_builder_image=$GOLANG_CONCOURSE_BUILDER_IMAGE \
   --platform linux/arm64 \
-  --tag $DOCKER_REGISTRY_BASE/concourse:$CONCOURSE_VERSION \
+  --tag $DOCKER_REGISTRY_BASE/concourse:"$CONCOURSE_VERSION-arm" \
   --output type=docker .
 
 if [ "$SHOULD_PUSH" = "true" ]; then
-  docker push $DOCKER_REGISTRY_BASE/concourse:$CONCOURSE_VERSION
+  docker push $DOCKER_REGISTRY_BASE/concourse:"$CONCOURSE_VERSION-arm"
 fi
